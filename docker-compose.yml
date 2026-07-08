@@ -53,6 +53,9 @@ services:
       - "5050:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+      # Pre-register the "local-db" server so the connection to Postgres
+      # only needs the password on first use.
+      - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
     depends_on:
       db:
         condition: service_healthy
