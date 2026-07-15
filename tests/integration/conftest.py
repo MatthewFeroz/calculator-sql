@@ -15,7 +15,7 @@ from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.database import Base
-from app.models.user import User  # noqa: F401 - registers table metadata
+from app.models import Calculation, User  # registers both tables in metadata
 
 
 @pytest.fixture(scope="session")
@@ -61,5 +61,5 @@ def postgres_session(postgres_engine: Engine) -> Generator[Session, None, None]:
         # Some integration tests deliberately commit to prove persistence and
         # database constraints.  Delete their rows before the next test begins.
         with postgres_engine.begin() as connection:
+            connection.execute(delete(Calculation))
             connection.execute(delete(User))
-
