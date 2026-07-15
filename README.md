@@ -10,8 +10,6 @@ image.
 
 - GitHub repository: [MatthewFeroz/calculator-sql](https://github.com/MatthewFeroz/calculator-sql)
 - Docker Hub repository: [matthewferoz/calculator-sql](https://hub.docker.com/r/matthewferoz/calculator-sql)
-- Reflection: [docs/reflection.md](docs/reflection.md)
-- Submission evidence checklist: [docs/evidence/README.md](docs/evidence/README.md)
 
 ## Security and Data Design
 
@@ -211,6 +209,12 @@ repository secrets under **Settings → Secrets and variables → Actions**:
 The deploy job targets the GitHub environment named `production`. It can be
 created under **Settings → Environments** if deployment approval or restricted
 secrets are desired.
+
+## Deployment Evidence
+
+![Successful GitHub Actions test, security, and deploy jobs](PIC1.png)
+
+![Published Docker Hub latest and commit-SHA tags](PIC2.png)
 
 ## Module 9 SQL Exercises
 
