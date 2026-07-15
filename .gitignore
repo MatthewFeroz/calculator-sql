@@ -16,6 +16,10 @@ test-results/
 logs/
 *.log
 
+# Local database and environment overrides
+*.db
+.env
+
 # IDE / OS files
 .vscode/
 .idea/

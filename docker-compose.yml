@@ -11,9 +11,9 @@ services:
     environment:
       PYTHONDONTWRITEBYTECODE: 1
       PYTHONUNBUFFERED: 1
-      # Connection string for future database integration; the host "db"
-      # resolves to the postgres service on the compose network.
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/fastapi_db
+      # SQLAlchemy connects through the Compose network, where "db" resolves
+      # to the PostgreSQL service rather than the host computer.
+      DATABASE_URL: postgresql+psycopg2://postgres:postgres@db:5432/fastapi_db
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       db:

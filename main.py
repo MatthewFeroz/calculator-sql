@@ -12,6 +12,7 @@ Request/response bodies are validated with Pydantic models, and every
 operation and error is logged to both the console and logs/app.log.
 """
 
+from contextlib import asynccontextmanager
 import logging
 import logging.handlers
 from pathlib import Path
@@ -24,6 +25,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
 
 from app.operations import add, subtract, multiply, divide
+from app.database_init import init_db
 
 
 # ---------------------------------------------------------------------------
@@ -45,7 +47,19 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="FastAPI Calculator")
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    """Create missing database tables before accepting application traffic."""
+
+    init_db()
+    yield
+
+
+app = FastAPI(
+    title="FastAPI Calculator with Secure Users",
+    description="Calculator API extended with a secure SQLAlchemy user model.",
+    lifespan=lifespan,
+)
 
 # Jinja2 renders HTML templates from the templates/ directory.
 templates = Jinja2Templates(directory="templates")
