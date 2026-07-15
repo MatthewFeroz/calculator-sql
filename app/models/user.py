@@ -3,7 +3,7 @@
 from datetime import datetime
 
 from sqlalchemy import DateTime, Integer, String, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
 
@@ -30,8 +30,20 @@ class User(Base):
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
 
+    # Deleting an account also removes its calculation history.  The ORM
+    # cascade keeps in-memory state consistent, and the database foreign key
+    # provides the same guarantee for deletes outside SQLAlchemy.
+    calculations: Mapped[list["Calculation"]] = relationship(
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+
     def __repr__(self) -> str:
         """Return a debugging representation that never exposes credentials."""
 
         return f"<User id={self.id!r} username={self.username!r}>"
 
+
+# Imported after the class for type resolution without a runtime import cycle.
+from app.models.calculation import Calculation  # noqa: E402

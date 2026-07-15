@@ -4,9 +4,9 @@ from sqlalchemy.engine import Engine
 
 from app.database import Base, engine
 
-# Importing the model registers its table with ``Base.metadata``.  The import is
-# intentionally retained even though the name is not referenced directly.
-from app.models.user import User  # noqa: F401
+# Importing the models registers their tables with ``Base.metadata``.  The
+# import is intentionally retained even though the names are not referenced.
+from app.models import Calculation, User  # noqa: F401
 
 
 def init_db(database_engine: Engine = engine) -> None:
@@ -17,4 +17,3 @@ def init_db(database_engine: Engine = engine) -> None:
 
 if __name__ == "__main__":  # pragma: no cover - exercised as an operator command
     init_db()
-
