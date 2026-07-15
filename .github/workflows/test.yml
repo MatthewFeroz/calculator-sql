@@ -8,14 +8,14 @@ on:
 
 # Cancel an older run for the same branch after a newer commit is pushed.
 concurrency:
-  group: module-10-${{ github.workflow }}-${{ github.ref }}
+  group: module-11-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
-  # Job 1: validate unit, PostgreSQL integration, API, and browser behavior.
+  # Job 1: validate user/calculation units, PostgreSQL, API, and browser behavior.
   test:
     runs-on: ubuntu-latest
     env:
