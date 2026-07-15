@@ -9,6 +9,7 @@ the operation logic, and the JSON response shapes all working together.
 import pytest
 from fastapi.testclient import TestClient
 
+import main as main_module
 from main import app
 
 
@@ -85,3 +86,31 @@ def test_missing_field_returns_400(client, endpoint):
     response = client.post(endpoint, json={"a": 10})
     assert response.status_code == 400
     assert "error" in response.json()
+
+
+@pytest.mark.parametrize(
+    "operation_name, endpoint, expected_status",
+    [
+        ("add", "/add", 400),
+        ("subtract", "/subtract", 400),
+        ("multiply", "/multiply", 400),
+        ("divide", "/divide", 500),
+    ],
+    ids=["add_error", "subtract_error", "multiply_error", "divide_error"],
+)
+def test_unexpected_operation_errors_are_safe(
+    client, monkeypatch, operation_name, endpoint, expected_status
+):
+    """Unexpected operation failures use the endpoint's documented safe response."""
+
+    def fail_operation(*_args):
+        raise RuntimeError("forced test failure")
+
+    monkeypatch.setattr(main_module, operation_name, fail_operation)
+    response = client.post(endpoint, json={"a": 10, "b": 5})
+
+    assert response.status_code == expected_status
+    if expected_status == 500:
+        assert response.json() == {"error": "Internal Server Error"}
+    else:
+        assert response.json() == {"error": "forced test failure"}

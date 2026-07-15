@@ -7,13 +7,18 @@ Shared pytest fixtures for end-to-end testing.
   drive the site the way a user would.
 """
 
+import os
 import subprocess
 import sys
 import time
 
 import pytest
 import requests
-from playwright.sync_api import sync_playwright
+
+# API tests should never require a developer's PostgreSQL instance.  The
+# application reads this value when ``main`` is first imported, while the
+# dedicated PostgreSQL suite below uses TEST_DATABASE_URL independently.
+os.environ.setdefault("DATABASE_URL", "sqlite+pysqlite:///:memory:")
 
 SERVER_URL = "http://127.0.0.1:8000/"
 
@@ -46,6 +51,10 @@ def fastapi_server():
 @pytest.fixture(scope="session")
 def playwright_instance():
     """Manage Playwright's lifecycle for the test session."""
+    # Import lazily so unit and database tests can run without loading browser
+    # tooling.  The E2E job still installs Playwright and Chromium explicitly.
+    from playwright.sync_api import sync_playwright
+
     with sync_playwright() as p:
         yield p
 
